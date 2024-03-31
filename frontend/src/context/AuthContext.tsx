@@ -1,4 +1,11 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { loginUser } from "../helpers/Api-communicators";
 type User = {
   name: string;
   email: string;
@@ -17,7 +24,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     //fetch if user cookies are valid and skip login
   }, []);
-  const login = async (email: string, password: string) => {};
+  const login = async (email: string, password: string) => {
+    const data = await loginUser(email, password);
+    if (data) {
+      setUser({ name: data.name, email: data.email });
+      setIsLoggedIn(true);
+    }
+  };
   const signup = async (name: string, email: string, password: string) => {};
   const logout = async () => {};
   const value = {
@@ -30,4 +43,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth =()=> useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
